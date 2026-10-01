@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuestionario para tu Catálogo | Luma Soluciones Digitales</title>
+<meta name="description" content="Completa este cuestionario para que preparemos el catálogo digital de tu emprendimiento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf7f2; --card:#ffffff; --ink:#2b2335; --muted:#6f6679;
+    --brand:#4a3463; --brand-2:#d9b96e; --soft:#efe9f5; --line:#e4dde9;
+    --ok:#2f6b4f; --err:#b3261e; --wa:#1fa855;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Nunito Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:680px;margin:0 auto;padding:0 16px 120px}
+  header.hero{padding:36px 0 20px}
+  .tag{display:inline-block;background:var(--soft);color:var(--brand);font-weight:700;font-size:13px;padding:6px 12px;border-radius:999px;letter-spacing:.2px}
+  h1{font-family:Fraunces,Georgia,serif;font-size:clamp(28px,7vw,40px);line-height:1.1;margin:14px 0 10px;color:var(--brand)}
+  .lead{color:var(--muted);margin:0}
+  .progress{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 0 10px}
+  .steps{display:flex;gap:6px}
+  .steps span{flex:1;height:6px;border-radius:6px;background:var(--line);transition:background .25s}
+  .steps span.on{background:var(--brand)}
+  .step-label{font-size:13px;color:var(--muted);margin-top:6px}
+  section.step{display:none;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 18px;margin-top:8px;box-shadow:0 6px 24px -18px rgba(74,52,99,.45)}
+  section.step.active{display:block;animation:in .25s ease}
+  @keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h2{font-family:Fraunces,Georgia,serif;font-size:24px;margin:0 0 4px;color:var(--brand)}
+  .hint{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .field{margin-bottom:18px}
+  label.q{display:block;font-weight:700;margin-bottom:6px}
+  label.q small{font-weight:400;color:var(--muted)}
+  .req{color:var(--err)}
+  input[type=text],input[type=tel],input[type=date],input[type=number],textarea,select{
+    width:100%;font:inherit;color:inherit;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;outline:none;transition:border .2s,box-shadow .2s}
+  textarea{min-height:90px;resize:vertical}
+  input:focus,textarea:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(74,52,99,.12)}
+  .invalid{border-color:var(--err)!important}
+  .err-msg{color:var(--err);font-size:13px;margin-top:4px;display:none}
+  .invalid + .err-msg{display:block}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{position:relative}
+  .chip input{position:absolute;opacity:0;pointer-events:none}
+  .chip span{display:inline-block;padding:9px 14px;border:1.5px solid var(--line);border-radius:999px;background:#fff;cursor:pointer;font-size:15px;user-select:none;transition:all .15s}
+  .chip input:checked + span{background:var(--brand);border-color:var(--brand);color:#fff}
+  .chip input:focus-visible + span{box-shadow:0 0 0 3px rgba(74,52,99,.25)}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:20px;text-align:center;cursor:pointer;background:#fdfcfe;transition:border .2s}
+  .drop:hover,.drop.over{border-color:var(--brand)}
+  .drop input{display:none}
+  .drop img{max-width:160px;max-height:120px;display:block;margin:0 auto 10px;object-fit:contain}
+  .drop .dz-txt{color:var(--muted);font-size:14px}
+  .swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .sw{width:38px;height:38px;border-radius:10px;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+  .pickers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .picker{border:1.5px solid var(--line);border-radius:12px;padding:10px;text-align:center;background:#fff}
+  .picker input[type=color]{width:100%;height:46px;border:none;background:none;padding:0;cursor:pointer}
+  .picker div{font-size:12px;color:var(--muted);margin-top:4px}
+  .picker code{font-size:12px}
+  .presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:10px}
+  .preset{border:1.5px solid var(--line);border-radius:12px;padding:8px;background:#fff;cursor:pointer;text-align:left;font:inherit}
+  .preset:hover{border-color:var(--brand)}
+  .preset .bar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin-bottom:6px}
+  .preset .bar i{flex:1}
+  .preset small{font-size:12px;color:var(--muted)}
+  .prod{border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;background:#fdfcfe}
+  .prod-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:700;color:var(--brand)}
+  .prod-grid{display:grid;grid-template-columns:1fr 110px;gap:10px}
+  .prod-grid .full{grid-column:1/-1}
+  .x{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;text-decoration:underline}
+  .nav{display:flex;gap:10px;margin-top:22px}
+  .btn{appearance:none;border:none;border-radius:12px;padding:14px 18px;font:700 16px "Nunito Sans",sans-serif;cursor:pointer;transition:transform .1s,opacity .2s}
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--brand);color:#fff;flex:1}
+  .btn-ghost{background:var(--soft);color:var(--brand)}
+  .btn-wa{background:var(--wa);color:#fff;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none}
+  .btn-line{background:#fff;color:var(--brand);border:1.5px solid var(--brand);width:100%}
+  .btn-add{background:#fff;border:1.5px dashed var(--brand);color:var(--brand);width:100%}
+  .note{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--ink)}
+  .note b{color:var(--brand)}
+  .summary{white-space:pre-wrap;background:#fbfaf7;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:14px;max-height:320px;overflow:auto}
+  .stack{display:grid;gap:10px;margin-top:14px}
+  .fab{position:fixed;right:16px;bottom:16px;z-index:20;background:var(--wa);color:#fff;border-radius:999px;padding:12px 16px 12px 12px;display:flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;font-size:14px;box-shadow:0 10px 24px -8px rgba(0,0,0,.35)}
+  .fab svg{width:26px;height:26px}
+  .toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:30;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:28px}
+  @media (max-width:420px){.pickers{grid-template-columns:repeat(3,1fr);gap:6px}.prod-grid{grid-template-columns:1fr 92px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <span class="tag">Luma Soluciones Digitales</span>
+    <h1>Vamos a armar tu catálogo</h1>
+    <p class="lead">Responde con calma, te toma unos 10 minutos. Lo que escribas se guarda en tu teléfono mientras llenas, así que si se te cierra la página no pierdes nada. Al final lo envías directo a mi WhatsApp.</p>
+  </header>
+
+  <div class="progress">
+    <div class="steps" id="bars"></div>
+    <div class="step-label" id="stepLabel"></div>
+  </div>
+
+  <form id="f" novalidate autocomplete="on">
+
+    <!-- PASO 1 -->
+    <section class="step active" data-title="Tu negocio">
+      <h2>Tu negocio</h2>
+      <p class="hint">Los datos básicos que van en la portada y en los botones del catálogo.</p>
+
+      <div class="field">
+        <label class="q" for="negocio">Nombre del negocio <span class="req">*</span></label>
+        <input type="text" id="negocio" name="negocio" required placeholder="Ej: Isabel Lazos y Accesorios">
+        <div class="err-msg">Escribe el nombre de tu negocio.</div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="contacto">Tu nombre <span class="req">*</span></label>
+        <input type="text" id="contacto" name="contacto" required placeholder="¿Con quién hablamos?">
+        <div class="err-msg">Escribe tu nombre.</div>
+      </div>
+
+      <div class="field">
+        <label class="q">¿Qué vendes? <span class="req">*</span> <small>(puedes marcar varias)</small></label>
+        <div class="chips" data-group="rubro" data-required="1">
+          <label class="chip"><input type="checkbox" name="rubro" value="Ropa (Shein u otra)"><span>Ropa (Shein u otra)</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Ropa de bebé y niños"><span>Ropa de bebé y niños</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Accesorios y lazos"><span>Accesorios y lazos</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Hecho a mano"><span>Hecho a mano</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Flores y arreglos"><span>Flores y arreglos</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Postres y tortas"><span>Postres y tortas</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Comida"><span>Comida</span></label>
+          <label class="chip"><input type="checkbox" name="rubro" value="Belleza y cuidado"><span>Belleza y cuidado</span></label>
+        </div>
+        <input type="text" name="rubro_otro" placeholder="Otro, ¿cuál?" style="margin-top:10px">
+        <div class="err-msg" id="rubroErr" style="display:none">Marca al menos una opción o escribe cuál.</div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="wa_pedidos">WhatsApp donde te llegarán los pedidos <span class="req">*</span></label>
+        <input type="tel" id="wa_pedidos" name="wa_pedidos" required inputmode="tel" placeholder="Ej: 0424-123-4567">
+        <div class="err-msg">Escribe un número válido, por ejemplo 0414-123-4567.</div>
+        <p class="hint" style="margin:6px 0 0">A este número llevarán los botones de cada producto.</p>
+      </div>
+
+      <div class="field">
+        <label class="q" for="instagram">Instagram <small>(si tienes)</small></label>
+        <input type="text" id="instagram" name="instagram" placeholder="@tunegocio">
+      </div>
+
+      <div class="field">
+        <label class="q">¿Dónde estás?</label>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="ciudad" value="Punto Fijo"><span>Punto Fijo</span></label>
+          <label class="chip"><input type="radio" name="ciudad" value="Coro"><span>Coro</span></label>
+          <label class="chip"><input type="radio" name="ciudad" value="Otra"><span>Otra</span></label>
+        </div>
+        <input type="text" name="zona" placeholder="Zona o sector (opcional)" style="margin-top:10px">
+      </div>
+    </section>
+
+    <!-- PASO 2 -->
+    <section class="step" data-title="Tu marca">
+      <h2>Tu marca</h2>
+      <p class="hint">Así el catálogo se ve como tu negocio y no como una plantilla más.</p>
+
+      <div class="field">
+        <label class="q">Sube tu logo <small>(PNG o JPG)</small></label>
+        <label class="drop" id="drop">
+          <input type="file" id="logo" accept="image/*">
+          <img id="logoPrev" alt="" hidden>
+          <div class="dz-txt" id="dzTxt">Toca aquí para elegir tu logo<br><small>Si tienes la versión sin fondo (PNG), mejor.</small></div>
+        </label>
+        <div id="logoColorsWrap" hidden>
+          <p class="hint" style="margin:10px 0 0">Estos colores salen de tu logo. Toca uno para usarlo como principal:</p>
+          <div class="swatches" id="logoColors"></div>
+        </div>
+        <div class="chips" style="margin-top:10px">
+          <label class="chip"><input type="checkbox" name="sin_logo" value="Sí"><span>No tengo logo todavía</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">Tus colores</label>
+        <p class="hint" style="margin-bottom:10px">Toca cada cuadro para elegir el color, o escoge una paleta lista más abajo.</p>
+        <div class="pickers">
+          <div class="picker"><input type="color" id="c1" value="#4a3463"><div>Principal</div><code id="c1t">#4A3463</code></div>
+          <div class="picker"><input type="color" id="c2" value="#d9b96e"><div>Secundario</div><code id="c2t">#D9B96E</code></div>
+          <div class="picker"><input type="color" id="c3" value="#efe9f5"><div>Fondo</div><code id="c3t">#EFE9F5</code></div>
+        </div>
+        <p class="hint" style="margin:14px 0 0">Paletas listas:</p>
+        <div class="presets" id="presets"></div>
+        <div class="chips" style="margin-top:12px">
+          <label class="chip"><input type="checkbox" name="colores_libres" value="Sí"><span>No sé, elíjanlos ustedes</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">¿Qué estilo te gusta más?</label>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="estilo" value="Elegante"><span>Elegante</span></label>
+          <label class="chip"><input type="radio" name="estilo" value="Divertido y colorido"><span>Divertido y colorido</span></label>
+          <label class="chip"><input type="radio" name="estilo" value="Minimalista"><span>Minimalista</span></label>
+          <label class="chip"><input type="radio" name="estilo" value="Tierno"><span>Tierno</span></label>
+          <label class="chip"><input type="radio" name="estilo" value="Natural"><span>Natural</span></label>
+          <label class="chip"><input type="radio" name="estilo" value="Moderno y juvenil"><span>Moderno y juvenil</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="referencia">¿Algún catálogo o cuenta que te guste cómo se ve? <small>(opcional)</small></label>
+        <input type="text" id="referencia" name="referencia" placeholder="Ej: @cuentaquemegusta">
+      </div>
+    </section>
+
+    <!-- PASO 3 -->
+    <section class="step" data-title="Tus productos">
+      <h2>Tus productos</h2>
+      <p class="hint">El catálogo lleva hasta 20 productos. Si ya los tienes claros, anótalos aquí. Las fotos me las mandas por WhatsApp al final.</p>
+
+      <div class="field">
+        <label class="q" for="cantidad">¿Cuántos productos quieres en el catálogo?</label>
+        <input type="number" id="cantidad" name="cantidad" min="1" max="20" inputmode="numeric" placeholder="Hasta 20">
+      </div>
+
+      <div class="field">
+        <label class="q" for="secciones">¿Lo dividimos en secciones? <small>(opcional)</small></label>
+        <input type="text" id="secciones" name="secciones" placeholder="Ej: Niñas, Niños / Tortas, Postres en vaso">
+      </div>
+
+      <div class="field">
+        <label class="q">¿Cómo estás con las fotos?</label>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="fotos" value="Tengo fotos propias"><span>Tengo fotos propias</span></label>
+          <label class="chip"><input type="radio" name="fotos" value="Uso fotos del proveedor"><span>Uso fotos del proveedor</span></label>
+          <label class="chip"><input type="radio" name="fotos" value="Necesito ayuda con las fotos"><span>Necesito ayuda</span></label>
+        </div>
+      </div>
+
+      <label class="q">Lista de productos <small>(opcional, pero nos ahorra tiempo)</small></label>
+      <div id="prods"></div>
+      <button type="button" class="btn btn-add" id="addProd">+ Agregar producto</button>
+    </section>
+
+    <!-- PASO 4 -->
+    <section class="step" data-title="Ventas y entrega">
+      <h2>Cómo vendes</h2>
+      <p class="hint">Esto va en la página de “¿Cómo comprar?” para que tu cliente no tenga que preguntar.</p>
+
+      <div class="field">
+        <label class="q">¿Cómo te pagan?</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="pagos" value="Pago Móvil"><span>Pago Móvil</span></label>
+          <label class="chip"><input type="checkbox" name="pagos" value="Transferencia en Bs"><span>Transferencia en Bs</span></label>
+          <label class="chip"><input type="checkbox" name="pagos" value="Efectivo en $"><span>Efectivo en $</span></label>
+          <label class="chip"><input type="checkbox" name="pagos" value="Binance"><span>Binance</span></label>
+          <label class="chip"><input type="checkbox" name="pagos" value="Zinli"><span>Zinli</span></label>
+          <label class="chip"><input type="checkbox" name="pagos" value="Zelle"><span>Zelle</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">¿Quieres que tus datos de pago salgan en el catálogo?</label>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="datos_pago" value="Sí, se los paso por WhatsApp"><span>Sí, te los paso por WhatsApp</span></label>
+          <label class="chip"><input type="radio" name="datos_pago" value="No, los doy en el chat"><span>No, los doy en el chat</span></label>
+        </div>
+        <p class="hint" style="margin:6px 0 0">Por seguridad no escribas aquí tu cédula ni números de cuenta. Me los pasas directo por WhatsApp.</p>
+      </div>
+
+      <div class="field">
+        <label class="q">¿Cómo muestras los precios?</label>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="moneda" value="En $, pago en Bs a tasa BCV"><span>En $, pago en Bs a tasa BCV</span></label>
+          <label class="chip"><input type="radio" name="moneda" value="Solo en $"><span>Solo en $</span></label>
+          <label class="chip"><input type="radio" name="moneda" value="Sin precios (consultar)"><span>Sin precios, que pregunten</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q">¿Cómo entregas?</label>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="entrega" value="Delivery"><span>Delivery</span></label>
+          <label class="chip"><input type="checkbox" name="entrega" value="Retiro en punto de encuentro"><span>Punto de encuentro</span></label>
+          <label class="chip"><input type="checkbox" name="entrega" value="Retiro en tienda o casa"><span>Retiro en tienda o casa</span></label>
+          <label class="chip"><input type="checkbox" name="entrega" value="Envíos nacionales"><span>Envíos nacionales</span></label>
+          <label class="chip"><input type="checkbox" name="entrega" value="Por encargo"><span>Por encargo</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="q" for="msg_boton">¿Qué mensaje quieres recibir cuando te escriban desde el catálogo?</label>
+        <textarea id="msg_boton" name="msg_boton" placeholder="Ej: Hola, vi tu catálogo y me interesa el [producto]. ¿Está disponible?"></textarea>
+        <p class="hint" style="margin:6px 0 0">Si lo dejas en blanco usamos uno que ya funciona bien. El nombre de cada producto se agrega solo.</p>
+      </div>
+
+      <div class="field">
+        <label class="q" for="politicas">Horario, cambios, apartados u otra info importante <small>(opcional)</small></label>
+        <textarea id="politicas" name="politicas" placeholder="Ej: Atiendo de lunes a sábado. Apartados con 50%. No hay cambios en ropa interior."></textarea>
+      </div>
+
+      <div class="field">
+        <label class="q" for="fecha">¿Para cuándo lo necesitas?</label>
+        <input type="date" id="fecha" name="fecha">
+      </div>
+
+      <div class="field">
+        <label class="q" for="comentarios">¿Algo más que deba saber? <small>(opcional)</small></label>
+        <textarea id="comentarios" name="comentarios"></textarea>
+      </div>
+    </section>
+
+    <!-- PASO 5: ENVIAR -->
+    <section class="step" data-title="Enviar">
+      <h2>¡Listo! Revisa y envía</h2>
+      <p class="hint">Este es el resumen que me va a llegar. Si algo está mal, vuelve atrás y corrígelo.</p>
+      <div class="summary" id="summary"></div>
+
+      <div class="stack">
+        <a class="btn btn-wa" id="sendWa" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 32 32" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6C5.3 9.8 10.1 5 16 5s10.7 4.8 10.7 10.6S21.9 26.1 16 26.1zm5.9-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1c-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2s0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+          Enviar respuestas por WhatsApp
+        </a>
+        <button type="button" class="btn btn-line" id="shareLogo" hidden>Enviar mi logo por WhatsApp</button>
+        <button type="button" class="btn btn-ghost" id="copyBtn">Copiar resumen</button>
+      </div>
+
+      <div class="note" style="margin-top:16px">
+        <b>Después de enviar:</b> en ese mismo chat mándame tu logo (si no lo enviaste con el botón) y las fotos de tus productos. Si el mensaje te llega cortado, pega el resumen: ya quedó copiado.
+      </div>
+    </section>
+
+    <div class="nav">
+      <button type="button" class="btn btn-ghost" id="prev" hidden>Atrás</button>
+      <button type="button" class="btn btn-primary" id="next">Siguiente</button>
+    </div>
+  </form>
+
+  <footer>Luma Soluciones Digitales · Punto Fijo, Falcón</footer>
+</div>
+
+<a class="fab" id="fab" target="_blank" rel="noopener" aria-label="Escríbeme por WhatsApp si tienes dudas">
+  <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3 29l6.9-2.1c1.9 1 4 1.6 6.1 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23.1c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.2 1.2-4-.3-.4c-1.1-1.7-1.7-3.6-1.7-5.6C5.3 9.8 10.1 5 16 5s10.7 4.8 10.7 10.6S21.9 26.1 16 26.1zm5.9-7.9c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1c-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.2s0-.5.1-.6l.5-.6c.2-.2.2-.4.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.8 5 .8.4 1.4.6 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+  ¿Dudas?
+</a>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  /* ====== CONFIGURACIÓN ====== */
+  var MI_WHATSAPP = "584124784922"; // 0412-478-4922 en formato internacional
+  var MAX_PRODUCTOS = 20;
+  var STORAGE_KEY = "luma_cuestionario_catalogo_v1";
+
+  var $ = function(s,c){return (c||document).querySelector(s)};
+  var $$ = function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
+  var form = $("#f");
+  var steps = $$("section.step");
+  var cur = 0;
+  var logoFile = null;
+
+  /* Botón flotante de dudas */
+  $("#fab").href = "https://wa.me/" + MI_WHATSAPP + "?text=" + encodeURIComponent("Hola Luma, estoy llenando el cuestionario del catálogo y tengo una duda.");
+
+  /* Toast */
+  var tt;
+  function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("show")},2600)}
+
+  /* Barra de progreso */
+  var bars = $("#bars");
+  steps.forEach(function(){bars.appendChild(document.createElement("span"))});
+  function render(){
+    steps.forEach(function(s,i){s.classList.toggle("active",i===cur)});
+    $$("#bars span").forEach(function(b,i){b.classList.toggle("on",i<=cur)});
+    $("#stepLabel").textContent = "Paso " + (cur+1) + " de " + steps.length + " · " + steps[cur].dataset.title;
+    $("#prev").hidden = cur===0;
+    $("#next").hidden = cur===steps.length-1;
+    $("#next").textContent = cur===steps.length-2 ? "Ver resumen" : "Siguiente";
+    if(cur===steps.length-1) buildSummary();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  /* Validación */
+  function normPhone(v){
+    var d=(v||"").replace(/\D/g,"");
+    if(d.indexOf("58")===0 && d.length===12) return d;
+    if(d.charAt(0)==="0" && d.length===11) return "58"+d.slice(1);
+    if(d.length===10 && d.charAt(0)==="4") return "58"+d;
+    return null;
+  }
+  function validate(i){
+    var ok=true, s=steps[i];
+    $$("input[required]",s).forEach(function(el){
+      var bad = !el.value.trim() || (el.id==="wa_pedidos" && !normPhone(el.value));
+      el.classList.toggle("invalid",bad); if(bad) ok=false;
+    });
+    var grp=$('[data-group="rubro"]',s);
+    if(grp){
+      var any=$$('input:checked',grp).length>0 || form.rubro_otro.value.trim();
+      $("#rubroErr").style.display = any?"none":"block"; if(!any) ok=false;
+    }
+    if(!ok){var first=$(".invalid",s)||$("#rubroErr"); if(first) first.scrollIntoView({behavior:"smooth",block:"center"}); toast("Te falta completar algo");}
+    return ok;
+  }
+  $$("input[required]").forEach(function(el){el.addEventListener("input",function(){el.classList.remove("invalid")})});
+
+  $("#next").onclick=function(){ if(!validate(cur)) return; cur=Math.min(cur+1,steps.length-1); save(); render(); };
+  $("#prev").onclick=function(){ cur=Math.max(cur-1,0); render(); };
+
+  /* Colores */
+  function setColor(id,hex){ var el=$("#"+id); el.value=hex; $("#"+id+"t").textContent=hex.toUpperCase(); }
+  ["c1","c2","c3"].forEach(function(id){ $("#"+id).addEventListener("input",function(e){ $("#"+id+"t").textContent=e.target.value.toUpperCase(); save(); }); });
+
+  var PRESETS=[
+    ["Lila y dorado","#4a3463","#d9b96e","#f6f1fa"],
+    ["Rosa empolvado","#b5657a","#e8c4b8","#fdf6f3"],
+    ["Verde natural","#2f5d46","#c9a96a","#f3f1ea"],
+    ["Azul bebé","#3d6a99","#f2c14e","#eef5fb"],
+    ["Coral alegre","#e5634d","#2d9c95","#fff6ef"],
+    ["Negro elegante","#1f1f1f","#c6a15b","#f7f5f0"],
+    ["Pastel tierno","#e79cb4","#8fc9c2","#fff8fb"],
+    ["Chocolate y crema","#5b3a29","#e3b778","#fbf5ec"]
+  ];
+  PRESETS.forEach(function(p){
+    var b=document.createElement("button"); b.type="button"; b.className="preset";
+    b.innerHTML='<div class="bar"><i style="background:'+p[1]+'"></i><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i></div><small>'+p[0]+'</small>';
+    b.onclick=function(){ setColor("c1",p[1]); setColor("c2",p[2]); setColor("c3",p[3]); form.paleta_nombre=p[0]; toast("Paleta “"+p[0]+"” aplicada"); save(); };
+    $("#presets").appendChild(b);
+  });
+
+  /* Logo: vista previa + colores sugeridos */
+  var drop=$("#drop"), logoIn=$("#logo");
+  ["dragover","dragenter"].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add("over")})});
+  ["dragleave","drop"].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove("over")})});
+  drop.addEventListener("drop",function(e){ if(e.dataTransfer.files[0]) handleLogo(e.dataTransfer.files[0]); });
+  logoIn.addEventListener("change",function(){ if(logoIn.files[0]) handleLogo(logoIn.files[0]); });
+
+  function handleLogo(file){
+    if(!/^image\//.test(file.type)){ toast("Ese archivo no es una imagen"); return; }
+    if(file.size>15*1024*1024){ toast("La imagen pesa mucho. Prueba con una más liviana"); return; }
+    logoFile=file;
+    var url=URL.createObjectURL(file), img=$("#logoPrev");
+    img.onload=function(){ extractColors(img); };
+    img.src=url; img.hidden=false;
+    $("#dzTxt").innerHTML="<b>"+escapeHtml(file.name)+"</b><br><small>Toca para cambiarlo</small>";
+    $("#shareLogo").hidden = !canShareFiles();
+  }
+  function extractColors(img){
+    try{
+      var c=document.createElement("canvas"), s=64; c.width=s; c.height=s;
+      var x=c.getContext("2d"); x.drawImage(img,0,0,s,s);
+      var d=x.getImageData(0,0,s,s).data, buckets={};
+      for(var i=0;i<d.length;i+=4){
+        var r=d[i],g=d[i+1],b=d[i+2],a=d[i+3];
+        if(a<128) continue;
+        var mx=Math.max(r,g,b), mn=Math.min(r,g,b);
+        if(mn>235) continue;            // casi blanco
+        var k=(r>>4)+","+(g>>4)+","+(b>>4);
+        if(!buckets[k]) buckets[k]={n:0,r:0,g:0,b:0};
+        var q=buckets[k]; q.n++; q.r+=r; q.g+=g; q.b+=b;
+      }
+      var arr=Object.keys(buckets).map(function(k){var q=buckets[k];return {n:q.n,hex:toHex(q.r/q.n,q.g/q.n,q.b/q.n),rgb:[q.r/q.n,q.g/q.n,q.b/q.n]}}).sort(function(a,b){return b.n-a.n});
+      var picked=[];
+      arr.forEach(function(c){ if(picked.length<6 && picked.every(function(p){return dist(p.rgb,c.rgb)>60})) picked.push(c); });
+      var wrap=$("#logoColors"); wrap.innerHTML="";
+      picked.forEach(function(c){
+        var b=document.createElement("button"); b.type="button"; b.className="sw"; b.style.background=c.hex; b.title=c.hex;
+        b.setAttribute("aria-label","Usar color "+c.hex);
+        b.onclick=function(){ setColor("c1",c.hex); toast("Color principal: "+c.hex.toUpperCase()); save(); };
+        wrap.appendChild(b);
+      });
+      $("#logoColorsWrap").hidden = picked.length===0;
+      if(picked[0]) setColor("c1",picked[0].hex);
+      if(picked[1]) setColor("c2",picked[1].hex);
+    }catch(e){}
+  }
+  function toHex(r,g,b){return "#"+[r,g,b].map(function(v){v=Math.round(v).toString(16);return v.length<2?"0"+v:v}).join("")}
+  function dist(a,b){return Math.sqrt(Math.pow(a[0]-b[0],2)+Math.pow(a[1]-b[1],2)+Math.pow(a[2]-b[2],2))}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+
+  /* Productos */
+  var prods=$("#prods");
+  function addProd(data){
+    var n=prods.children.length;
+    if(n>=MAX_PRODUCTOS){ toast("Llegaste al máximo de "+MAX_PRODUCTOS+" productos"); return; }
+    data=data||{};
+    var el=document.createElement("div"); el.className="prod";
+    el.innerHTML='<div class="prod-head"><span>Producto '+(n+1)+'</span><button type="button" class="x">Quitar</button></div>'+
+      '<div class="prod-grid">'+
+      '<input type="text" class="p-nombre" placeholder="Nombre del producto">'+
+      '<input type="text" class="p-precio" inputmode="decimal" placeholder="Precio $">'+
+      '<input type="text" class="p-detalle full" placeholder="Tallas, sabores, tamaños o detalle (opcional)">'+
+      '</div>';
+    $(".p-nombre",el).value=data.nombre||""; $(".p-precio",el).value=data.precio||""; $(".p-detalle",el).value=data.detalle||"";
+    $(".x",el).onclick=function(){ el.remove(); renumber(); save(); };
+    $$("input",el).forEach(function(i){i.addEventListener("input",save)});
+    prods.appendChild(el);
+    $("#addProd").hidden = prods.children.length>=MAX_PRODUCTOS;
+  }
+  function renumber(){ $$(".prod",prods).forEach(function(p,i){ $(".prod-head span",p).textContent="Producto "+(i+1); }); $("#addProd").hidden = prods.children.length>=MAX_PRODUCTOS; }
+  $("#addProd").onclick=function(){ addProd(); var last=prods.lastElementChild; if(last) $(".p-nombre",last).focus(); };
+
+  /* Recolectar datos */
+  function vals(name){ return $$('input[name="'+name+'"]:checked').map(function(i){return i.value}); }
+  function val(name){ var el=form.elements[name]; return el ? (el.value||"").trim() : ""; }
+  function collect(){
+    var rub=vals("rubro"); if(val("rubro_otro")) rub.push(val("rubro_otro"));
+    return {
+      negocio:val("negocio"), contacto:val("contacto"), rubro:rub,
+      wa:val("wa_pedidos"), instagram:val("instagram"),
+      ciudad:(vals("ciudad")[0]||""), zona:val("zona"),
+      logo: logoFile ? "Lo subí en el formulario ("+logoFile.name+")" : (vals("sin_logo").length ? "No tengo logo todavía" : "Te lo envío por WhatsApp"),
+      colores_libres: vals("colores_libres").length>0,
+      c1:$("#c1").value.toUpperCase(), c2:$("#c2").value.toUpperCase(), c3:$("#c3").value.toUpperCase(),
+      estilo:(vals("estilo")[0]||""), referencia:val("referencia"),
+      cantidad:val("cantidad"), secciones:val("secciones"), fotos:(vals("fotos")[0]||""),
+      productos: $$(".prod",prods).map(function(p){return {nombre:$(".p-nombre",p).value.trim(),precio:$(".p-precio",p).value.trim(),detalle:$(".p-detalle",p).value.trim()}}).filter(function(p){return p.nombre}),
+      pagos:vals("pagos"), datos_pago:(vals("datos_pago")[0]||""), moneda:(vals("moneda")[0]||""),
+      entrega:vals("entrega"), msg_boton:val("msg_boton"), politicas:val("politicas"),
+      fecha:val("fecha"), comentarios:val("comentarios")
+    };
+  }
+  function line(label,v){ if(Array.isArray(v)) v=v.join(", "); return v ? label+": "+v+"\n" : ""; }
+  function fmtDate(s){ if(!s) return ""; var p=s.split("-"); return p.length===3 ? p[2]+"/"+p[1]+"/"+p[0] : s; }
+
+  function buildText(){
+    var d=collect(), t="";
+    t+="*CUESTIONARIO DE CATÁLOGO*\n\n";
+    t+="*1. Negocio*\n";
+    t+=line("Negocio",d.negocio)+line("Contacto",d.contacto)+line("Vende",d.rubro)+line("WhatsApp de pedidos",d.wa)+line("Instagram",d.instagram)+line("Ciudad",d.ciudad+(d.zona?" ("+d.zona+")":""));
+    t+="\n*2. Marca*\n";
+    t+=line("Logo",d.logo);
+    t+= d.colores_libres ? "Colores: que los elija Luma\n" : "Colores: principal "+d.c1+", secundario "+d.c2+", fondo "+d.c3+"\n";
+    t+=line("Estilo",d.estilo)+line("Referencia",d.referencia);
+    t+="\n*3. Productos*\n";
+    t+=line("Cantidad",d.cantidad)+line("Secciones",d.secciones)+line("Fotos",d.fotos);
+    if(d.productos.length){
+      d.productos.forEach(function(p,i){ t+=(i+1)+". "+p.nombre+(p.precio?" | $"+p.precio.replace(/^\$/,""):"")+(p.detalle?" | "+p.detalle:"")+"\n"; });
+    }
+    t+="\n*4. Ventas y entrega*\n";
+    t+=line("Pagos",d.pagos)+line("Datos de pago en el catálogo",d.datos_pago)+line("Precios",d.moneda)+line("Entrega",d.entrega)+line("Mensaje de los botones",d.msg_boton)+line("Info importante",d.politicas)+line("Lo necesito para",fmtDate(d.fecha))+line("Comentarios",d.comentarios);
+    return t.trim();
+  }
+
+  function buildSummary(){
+    var text=buildText();
+    $("#summary").textContent=text.replace(/\*/g,"");
+    $("#sendWa").href="https://wa.me/"+MI_WHATSAPP+"?text="+encodeURIComponent(text);
+    $("#shareLogo").hidden = !(logoFile && canShareFiles());
+  }
+
+  /* Copiar */
+  function copy(text){
+    if(navigator.clipboard && window.isSecureContext){ return navigator.clipboard.writeText(text); }
+    return new Promise(function(res,rej){ try{ var ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0"; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); res(); }catch(e){rej(e)} });
+  }
+  $("#copyBtn").onclick=function(){ copy(buildText()).then(function(){toast("Resumen copiado")},function(){toast("No se pudo copiar, selecciónalo a mano")}); };
+  $("#sendWa").addEventListener("click",function(){ copy(buildText()).catch(function(){}); });
+
+  /* Compartir logo (abre el menú de compartir del teléfono) */
+  function canShareFiles(){ try{ return !!(logoFile && navigator.canShare && navigator.canShare({files:[logoFile]})); }catch(e){ return false; } }
+  $("#shareLogo").onclick=function(){
+    if(!canShareFiles()){ toast("Envía el logo como foto en el chat"); return; }
+    navigator.share({files:[logoFile], title:"Logo", text:"Logo de "+(val("negocio")||"mi negocio")})
+      .then(function(){toast("¡Logo enviado! Elige mi chat si te lo pide")})
+      .catch(function(){});
+  };
+
+  /* Guardar borrador en el teléfono */
+  function save(){
+    try{
+      var data={}; $$("input,textarea,select",form).forEach(function(el){
+        if(!el.name || el.type==="file") return;
+        if(el.type==="checkbox"||el.type==="radio"){ if(el.checked){ (data[el.name]=data[el.name]||[]).push(el.value); } }
+        else data[el.name]=el.value;
+      });
+      data._c=[ $("#c1").value,$("#c2").value,$("#c3").value ];
+      data._p=$$(".prod",prods).map(function(p){return {nombre:$(".p-nombre",p).value,precio:$(".p-precio",p).value,detalle:$(".p-detalle",p).value}});
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+    }catch(e){}
+  }
+  function load(){
+    var data=null; try{ data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null"); }catch(e){}
+    if(!data){ addProd(); return; }
+    $$("input,textarea,select",form).forEach(function(el){
+      if(!el.name || el.type==="file" || !(el.name in data)) return;
+      if(el.type==="checkbox"||el.type==="radio") el.checked = (data[el.name]||[]).indexOf(el.value)>-1;
+      else el.value=data[el.name];
+    });
+    if(data._c){ setColor("c1",data._c[0]); setColor("c2",data._c[1]); setColor("c3",data._c[2]); }
+    (data._p&&data._p.length?data._p:[{}]).forEach(addProd);
+  }
+  form.addEventListener("input",save);
+  form.addEventListener("change",save);
+  form.addEventListener("submit",function(e){e.preventDefault()});
+
+  load(); render();
+})();
+</script>
+</body>
+</html>
